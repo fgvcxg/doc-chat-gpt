@@ -7,3 +7,4 @@ langchain-openai
 pandas
 python-pptx
 python-docx
+pypdf
