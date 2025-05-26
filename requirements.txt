@@ -1,14 +1,14 @@
-# 앱 구동 필수
+# 기본
 streamlit
 python-dotenv
 
-# OpenAI API 및 GPT 연결
+# GPT & Langchain
 openai
 langchain==0.1.14
-langchain-community==0.0.24
+langchain-community==0.0.30
 langchain-openai==0.0.7
 
-# 문서 로딩용
+# 문서 로딩
 pypdf
 python-pptx
 python-docx
@@ -18,5 +18,5 @@ openpyxl
 # 벡터 DB
 chromadb==0.4.22
 
-# 충돌 방지용
+# 충돌 방지
 protobuf==3.20.*
