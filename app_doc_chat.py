@@ -3,7 +3,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from langchain.schema import Document
 from langchain.text_splitter import CharacterTextSplitter
-from langchain_community.vectorstores import Chroma
+from langchain.vectorstores import FAISS
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain.chains import RetrievalQA
@@ -58,7 +58,7 @@ if st.button("✅ 문서 로드 및 챗봇 준비"):
     # ✅ 문서 조각 및 벡터화
     splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     split_docs = splitter.split_documents(all_docs)
-    vectordb = Chroma.from_documents(split_docs, OpenAIEmbeddings(openai_api_key=api_key))
+    vectordb = FAISS.from_documents(split_docs, OpenAIEmbeddings(openai_api_key=api_key))
     retriever = vectordb.as_retriever()
 
     # ✅ GPT-3.5 연결
