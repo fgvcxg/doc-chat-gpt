@@ -19,7 +19,12 @@ api_key = os.getenv("OPENAI_API_KEY")
 st.set_page_config(page_title="문서 기반 GPT 챗봇", layout="wide")
 st.title("📚 문서 기반 대화형 GPT 챗봇")
 
-doc_dir = "D:/toyproj"
+# 앱 실행 디렉토리 기준 상대 경로
+doc_dir = "docs"
+
+# 없으면 자동 생성 (Streamlit Cloud 대응)
+if not os.path.exists(doc_dir):
+    os.makedirs(doc_dir)
 
 # ✅ 문서 불러오기 버튼
 if st.button("✅ 문서 로드 및 챗봇 준비"):
