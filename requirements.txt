@@ -1,0 +1,9 @@
+streamlit
+python-dotenv
+langchain
+openai
+langchain-community
+langchain-openai
+pandas
+python-pptx
+python-docx
