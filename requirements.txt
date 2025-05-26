@@ -1,24 +1,19 @@
-# Streamlit 실행
 streamlit
 python-dotenv
 
-# GPT + LangChain
 openai
 langchain==0.1.14
 langchain-community==0.0.30
 langchain-openai==0.0.7
 
-# 문서 로딩
 pypdf
 python-pptx
 python-docx
 pandas
 openpyxl
 
-# 벡터 DB
 chromadb==0.4.22
 
-# 충돌 방지 핵심
 protobuf==3.20.*
 opentelemetry-api==1.22.0
 opentelemetry-sdk==1.22.0
