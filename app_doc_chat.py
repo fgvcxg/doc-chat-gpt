@@ -29,9 +29,9 @@ def load_documents():
             if file.endswith(".pdf"):
                 loader = PyPDFLoader(os.path.join(doc_dir, file))
                 all_docs.extend(loader.load())
-            elif file.endswith(".pptx"):
-                loader = UnstructuredPowerPointLoader(os.path.join(doc_dir, file))
-                all_docs.extend(loader.load())
+#            elif file.endswith(".pptx"):
+#                loader = UnstructuredPowerPointLoader(os.path.join(doc_dir, file))
+#                all_docs.extend(loader.load())
         splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         split_docs = splitter.split_documents(all_docs)
         vectordb = FAISS.from_documents(split_docs, OpenAIEmbeddings(openai_api_key=api_key))
