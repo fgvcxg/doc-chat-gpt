@@ -25,6 +25,12 @@ if "vectordb" not in st.session_state:
     st.session_state["vectordb"] = None
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = []
+if "model_name" not in st.session_state:
+    st.session_state["model_name"] = "gpt-3.5-turbo"
+
+# 모델 선택 드롭다운
+model_name = st.selectbox("🤖 사용할 GPT 모델을 선택하세요", ["gpt-3.5-turbo", "gpt-4o"], index=0)
+st.session_state["model_name"] = model_name
 
 if st.session_state["ready"]:
     st.success("✅ 문서 로드 완료! 지금 바로 질문해보세요.")
@@ -86,7 +92,7 @@ if user_input and st.session_state["ready"]:
     with st.chat_message("assistant"):
         with st.spinner("🤖 GPT가 답변 중입니다..."):
             docs = st.session_state["vectordb"].similarity_search(user_input, k=5)
-            llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, openai_api_key=api_key)
+            llm = ChatOpenAI(model_name=st.session_state["model_name"], temperature=0, openai_api_key=api_key)
             chain = load_qa_chain(llm, chain_type="stuff")
             response = chain.run(input_documents=docs, question=user_input)
             st.markdown(response)
