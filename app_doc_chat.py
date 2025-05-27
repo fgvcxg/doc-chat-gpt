@@ -91,10 +91,22 @@ if user_input and st.session_state["ready"]:
 
     with st.chat_message("assistant"):
         with st.spinner("🤖 GPT가 답변 중입니다..."):
-            docs = st.session_state["vectordb"].similarity_search(user_input, k=5)
+            # 유사도 점수 포함 검색
+            docs_and_scores = st.session_state["vectordb"].similarity_search_with_score(user_input, k=5)
+            docs = [doc for doc, score in docs_and_scores if score > 0.3]  # 점수 필터링
+
+            # 커스텀 프롬프트 추가
+            system_prompt = f"""
+            너는 문서를 기반으로 정보를 제공하는 전문가야.
+            아래 문서들을 참고해서 사용자 질문에 대해 항상 한국어로 자세히 설명해줘.
+            문서가 영어로 되어 있어도 답변은 반드시 한국어로 해.
+            그리고 한국어로 질문해도 문서들이 영어일 경우 답변이 안될 수 있으니까 한국어로 질문해도 한번 영어로 변경해서 답변을 찾아봐줘.
+            질문: {user_input}
+            """
+
             llm = ChatOpenAI(model_name=st.session_state["model_name"], temperature=0, openai_api_key=api_key)
             chain = load_qa_chain(llm, chain_type="stuff")
-            response = chain.run(input_documents=docs, question=user_input)
+            response = chain.run(input_documents=docs, question=system_prompt)
             st.markdown(response)
 
     st.session_state.chat_history.append({"role": "user", "content": user_input})
