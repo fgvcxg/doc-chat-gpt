@@ -9,15 +9,15 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 
-# ✅ 환경 변수 로드
+# ✅ 환경 변수 로드 및 진단
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 helicone_key = os.getenv("HELICONE_API_KEY")
 
-# ✅ 환경변수 상태 점검용 사이드바 출력
-st.sidebar.title("🔐 API 상태 점검")
-st.sidebar.code(f"OPENAI_API_KEY: {api_key[:10]}********" if api_key else "❌ OpenAI 키 없음")
-st.sidebar.code(f"HELICONE_API_KEY: {helicone_key[:10]}********" if helicone_key else "❌ Helicone 키 없음")
+# 🔍 환경 변수 진단 출력
+st.sidebar.title("🧪 .env 진단 결과")
+st.sidebar.code(f"OPENAI_API_KEY: {api_key[:10]}********" if api_key else "❌ api_key 없음")
+st.sidebar.code(f"HELICONE_API_KEY: {helicone_key[:10]}********" if helicone_key else "❌ helicone_key 없음")
 
 # 📁 기본 설정
 doc_dir = "docs"
@@ -91,7 +91,6 @@ else:
         st.session_state["vectordb"] = vectordb
         st.session_state["ready"] = True
 
-# ✅ 상태 출력
 if st.session_state["ready"]:
     st.success("✅ 문서 로드 완료! 지금 바로 질문해보세요.")
 else:
