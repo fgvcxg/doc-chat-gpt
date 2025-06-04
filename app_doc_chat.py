@@ -2,6 +2,7 @@ import os
 import time
 import streamlit as st
 from datetime import datetime
+from pathlib import Path
 from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -12,8 +13,10 @@ from langchain.chains.question_answering import load_qa_chain
 # ✅ 페이지 설정은 반드시 제일 위에서 호출해야 함
 st.set_page_config(page_title="📚 문서 기반 GPT 챗봇", layout="wide")
 
-# ✅ 환경 변수 로드 및 진단
-load_dotenv()
+# ✅ 환경 변수 로드 및 진단 (경로 명시 + override)
+dotenv_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path, override=True)
+
 api_key = os.getenv("OPENAI_API_KEY")
 helicone_key = os.getenv("HELICONE_API_KEY")
 
