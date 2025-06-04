@@ -130,7 +130,7 @@ if user_input and st.session_state["ready"]:
                 openai_api_key=api_key,
                 base_url="https://oai.helicone.ai/v1",
                 default_headers={
-                    "Helicone-Auth": "Bearer sk-helicone-bfrdsya-gakusya-vy72o7y-d25mhma"
+                    "Helicone-Auth": f"Bearer sk-helicone-bfrdsya-gakusya-vy72o7y-d25mhma"
                 }
             )
 
