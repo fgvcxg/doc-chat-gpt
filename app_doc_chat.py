@@ -9,17 +9,23 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 
-# 🌐 환경 변수 로드
+# ✅ 환경 변수 로드
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
+helicone_key = os.getenv("HELICONE_API_KEY")
+
+# ✅ 환경변수 상태 점검용 사이드바 출력
+st.sidebar.title("🔐 API 상태 점검")
+st.sidebar.code(f"OPENAI_API_KEY: {api_key[:10]}********" if api_key else "❌ OpenAI 키 없음")
+st.sidebar.code(f"HELICONE_API_KEY: {helicone_key[:10]}********" if helicone_key else "❌ Helicone 키 없음")
+
+# 📁 기본 설정
 doc_dir = "docs"
 last_update_file = "last_update.txt"
 
-# 🔧 Streamlit 설정
 st.set_page_config(page_title="📚 문서 기반 GPT 챗봇", layout="wide")
 st.title("📚 로컬 문서 기반 GPT 챗봇")
 
-# 🧠 세션 초기화
 if "ready" not in st.session_state:
     st.session_state["ready"] = False
 if "vectordb" not in st.session_state:
@@ -29,11 +35,9 @@ if "chat_history" not in st.session_state:
 if "model_name" not in st.session_state:
     st.session_state["model_name"] = "gpt-3.5-turbo"
 
-# 모델 선택
 model_name = st.selectbox("🤖 사용할 GPT 모델을 선택하세요", ["gpt-3.5-turbo", "gpt-4o"], index=0)
 st.session_state["model_name"] = model_name
 
-# 📁 문서 변경 감지
 need_reload = False
 latest_mtime = 0
 modified_files = []
@@ -54,7 +58,6 @@ if os.path.exists(last_update_file):
 if latest_mtime > last_saved_time:
     need_reload = True
 
-# 📚 벡터 DB 생성 또는 재사용
 if need_reload or not os.path.exists(last_update_file):
     with st.spinner("📁 문서를 불러오는 중입니다..."):
         all_docs = []
@@ -73,14 +76,6 @@ if need_reload or not os.path.exists(last_update_file):
             f.write(str(time.time()))
 
         st.session_state["ready"] = True
-
-        # 업데이트 문서만 보여주기
-        if need_reload:
-            st.subheader("📄 업데이트된 문서 목록")
-            for name, ts in modified_files:
-                if ts > last_saved_time:
-                    download_link = os.path.join(doc_dir, name)
-                    st.markdown(f"- [{name}]({download_link}) (수정: {datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')})")
 else:
     if not st.session_state["vectordb"]:
         all_docs = []
@@ -96,26 +91,19 @@ else:
         st.session_state["vectordb"] = vectordb
         st.session_state["ready"] = True
 
-# ✅ 문서 로딩 상태 출력
+# ✅ 상태 출력
 if st.session_state["ready"]:
     st.success("✅ 문서 로드 완료! 지금 바로 질문해보세요.")
 else:
     st.warning("⏳ 문서를 불러오는 중입니다. 잠시만 기다려 주세요...")
 
-# 🗣️ 기존 대화 출력
 for msg in st.session_state.chat_history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# 💬 입력창
-if st.session_state["ready"]:
-    user_input = st.chat_input("💬 질문을 입력하세요:")
-else:
-    st.chat_input("⏳ 문서를 불러오는 중입니다... (입력 불가)", disabled=True)
-    user_input = None
+user_input = st.chat_input("💬 질문을 입력하세요:") if st.session_state["ready"] else None
 
-# 🤖 질문 처리
-if user_input and st.session_state["ready"]:
+if user_input:
     with st.chat_message("user"):
         st.markdown(user_input)
 
@@ -130,7 +118,7 @@ if user_input and st.session_state["ready"]:
                 openai_api_key=api_key,
                 base_url="https://oai.helicone.ai/v1",
                 default_headers={
-                    "Helicone-Auth": f"Bearer sk-helicone-bfrdsya-gakusya-vy72o7y-d25mhma"
+                    "Helicone-Auth": f"Bearer {helicone_key}"
                 }
             )
 
@@ -144,7 +132,6 @@ if user_input and st.session_state["ready"]:
 
             chain = load_qa_chain(llm, chain_type="stuff")
 
-            # ❗ response 항상 정의되도록 처리
             response = ""
             try:
                 if docs:
@@ -156,6 +143,5 @@ if user_input and st.session_state["ready"]:
 
             st.markdown(response)
 
-    # 💾 대화 기록 저장
     st.session_state.chat_history.append({"role": "user", "content": user_input})
     st.session_state.chat_history.append({"role": "assistant", "content": response})
