@@ -138,11 +138,22 @@ if user_input and st.session_state["ready"]:
                 model_name=st.session_state["model_name"],
                 temperature=0,
                 openai_api_key=api_key,
-                base_url="https://oai.hconeai.com/v1",  # Helicone 프록시 주소
+                base_url="https://oai.hconeai.com/v1",
                 default_headers={
                     "Helicone-Auth": f"Bearer {os.getenv('HELICONE_API_KEY')}"
                 }
             )
 
+            chain = load_qa_chain(llm, chain_type="stuff")
+
+            # ✅ 누락된 GPT 호출 실행
+            if docs:
+                response = chain.run(input_documents=docs, question=system_prompt)
+            else:
+                response = "⚠️ 관련된 문서를 찾을 수 없습니다. 질문을 다시 시도해보세요."
+
+            st.markdown(response)
+
+    # ✅ 응답 저장
     st.session_state.chat_history.append({"role": "user", "content": user_input})
     st.session_state.chat_history.append({"role": "assistant", "content": response})
