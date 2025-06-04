@@ -20,11 +20,6 @@ load_dotenv(dotenv_path, override=True)
 api_key = os.getenv("OPENAI_API_KEY")
 helicone_key = os.getenv("HELICONE_API_KEY")
 
-# 🔍 환경 변수 진단 출력
-st.sidebar.title("🧪 .env 진단 결과")
-st.sidebar.code(f"OPENAI_API_KEY: {api_key[:10]}********" if api_key else "❌ 없음")
-st.sidebar.code(f"HELICONE_API_KEY: {helicone_key[:10]}********" if helicone_key else "❌ 없음")
-
 # 📁 기본 설정
 st.title("📚 로컬 문서 기반 GPT 챗봇")
 doc_dir = "docs"
