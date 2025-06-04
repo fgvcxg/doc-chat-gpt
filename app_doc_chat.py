@@ -9,6 +9,9 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 
+# ✅ 페이지 설정은 반드시 제일 위에서 호출해야 함
+st.set_page_config(page_title="📚 문서 기반 GPT 챗봇", layout="wide")
+
 # ✅ 환경 변수 로드 및 진단
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
@@ -16,15 +19,13 @@ helicone_key = os.getenv("HELICONE_API_KEY")
 
 # 🔍 환경 변수 진단 출력
 st.sidebar.title("🧪 .env 진단 결과")
-st.sidebar.code(f"OPENAI_API_KEY: {api_key[:10]}********" if api_key else "❌ api_key 없음")
-st.sidebar.code(f"HELICONE_API_KEY: {helicone_key[:10]}********" if helicone_key else "❌ helicone_key 없음")
+st.sidebar.code(f"OPENAI_API_KEY: {api_key[:10]}********" if api_key else "❌ 없음")
+st.sidebar.code(f"HELICONE_API_KEY: {helicone_key[:10]}********" if helicone_key else "❌ 없음")
 
 # 📁 기본 설정
+st.title("📚 로컬 문서 기반 GPT 챗봇")
 doc_dir = "docs"
 last_update_file = "last_update.txt"
-
-st.set_page_config(page_title="📚 문서 기반 GPT 챗봇", layout="wide")
-st.title("📚 로컬 문서 기반 GPT 챗봇")
 
 if "ready" not in st.session_state:
     st.session_state["ready"] = False
