@@ -8,6 +8,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
+from langchain_openai import ChatOpenAI
 
 # 환경 변수 로드
 load_dotenv()
@@ -133,10 +134,15 @@ if user_input and st.session_state["ready"]:
             질문: {user_input}
             """
 
-            llm = ChatOpenAI(model_name=st.session_state["model_name"], temperature=0, openai_api_key=api_key)
-            chain = load_qa_chain(llm, chain_type="stuff")
-            response = chain.run(input_documents=docs, question=system_prompt)
-            st.markdown(response)
+            llm = ChatOpenAI(
+                model_name=st.session_state["model_name"],
+                temperature=0,
+                openai_api_key=api_key,
+                base_url="https://oai.hconeai.com/v1",  # Helicone 프록시 주소
+                default_headers={
+                    "Helicone-Auth": f"Bearer {os.getenv('HELICONE_API_KEY')}"
+                }
+            )
 
     st.session_state.chat_history.append({"role": "user", "content": user_input})
     st.session_state.chat_history.append({"role": "assistant", "content": response})
